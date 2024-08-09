@@ -265,6 +265,550 @@ int main() {
 }
     </code></pre>
 
+
+
+         
+ <h2>0/1 knapsack Sort</h2>
+    <pre><code class="language-c">
+#include<stdio.h>
+int w[10],p[10],n;
+int max(int a,int b)
+{
+    return a>b?a:b;
+}
+int knap(int i,int m)
+{
+    if(i==n) return w[i]>m?0:p[i];
+    if(w[i]>m) return knap(i+1,m);
+    return max(knap(i+1,m),knap(i+1,m-w[i])+p[i]);
+}
+int main()
+{
+    int m,i,max_profit;
+    printf("\nEnter the no. of objects:");
+    scanf("%d",&n);
+    printf("\nEnter the knapsack capacity:");
+    scanf("%d",&m);
+    printf("\nEnter profit followed by weight:\n");
+    for(i=1; i<=n; i++)
+        scanf("%d %d",&p[i],&w[i]);
+    max_profit=knap(1,m);
+    printf("\nMax profit=%d",max_profit);
+    return 0;
+}
+    </code></pre>
+        
+
+        <h2>grredy approximation Sort</h2>
+    <pre><code class="language-c">
+#include <stdio.h>
+#define MAX 50
+int p[MAX], w[MAX], x[MAX];
+double maxprofit;
+int n, m, i;
+void greedyKnapsack(int n, int w[], int p[], int m)
+{
+    double ratio[MAX];
+
+// Calculate the ratio of profit to weight for each item
+    for (i = 0; i < n; i++)
+    {
+        ratio[i] = (double)p[i] / w[i];
+    }
+// Sort items based on the ratio in non-increasing order
+    for (i = 0; i < n - 1; i++)
+    {
+        for (int j = i + 1; j < n; j++)
+        {
+            if (ratio[i] < ratio[j])
+            {
+                double temp = ratio[i];
+                ratio[i] = ratio[j];
+                ratio[j] = temp;
+
+                int temp2 = w[i];
+                w[i] = w[j];
+                w[j] = temp2;
+
+                temp2 = p[i];
+                p[i] = p[j];
+                p[j] = temp2;
+            }
+        }
+    }
+    int currentWeight = 0;
+    maxprofit = 0.0;
+// Fill the knapsack with items
+    for (i = 0; i < n; i++)
+    {
+        if (currentWeight + w[i] <= m)
+        {
+            x[i] = 1; // Item i is selected
+            currentWeight += w[i];
+            maxprofit += p[i];
+        }
+        else
+        {
+// Fractional part of item i is selected
+            x[i] = (m - currentWeight) / (double)w[i];
+            maxprofit += x[i] * p[i];
+            break;
+        }
+    }
+    printf("Optimal solution for greedy method: %.1f\n", maxprofit);
+    printf("Solution vector for greedy method: ");
+    for (i = 0; i < n; i++)
+        printf("%d\t", x[i]);
+}
+int main()
+{
+    printf("Enter the number of objects: ");
+    scanf("%d", &n);
+    printf("Enter the objects' weights: ");
+    for (i = 0; i < n; i++)
+        scanf("%d", &w[i]);
+    printf("Enter the objects' profits: ");
+    for (i = 0; i < n; i++)
+        scanf("%d", &p[i]);
+    printf("Enter the maximum capacity: ");
+    scanf("%d", &m);
+    greedyKnapsack(n, w, p, m);
+    return 0;
+}
+
+    </code></pre>
+
+
+
+         <h2> s1s2</h2>
+    <pre><code class="language-c">
+#include<stdio.h>
+#define MAX 10
+int s[MAX],x[MAX],d;
+void sumofsub(int p,int k,int r)
+{
+    int i;
+    x[k]=1;
+    if((p+s[k])==d)
+    {
+        for(i=1; i<=k; i++)
+            if(x[i]==1)
+                printf("%d ",s[i]);
+        printf("\n");
+    }
+    else if(p+s[k]+s[k+1]<=d)
+        sumofsub(p+s[k],k+1,r
+                 -s[k]);
+    if((p+r
+            -s[k]>=d) && (p+s[k+1]<=d))
+    {
+        x[k]=0;
+        sumofsub(p,k+1,r
+                 -s[k]);
+    }
+}
+int main()
+{
+    int i,n,sum=0;
+    printf("\nEnter the n value:");
+    scanf("%d",&n);
+    printf("\nEnter the set in increasing order:");
+    for(i=1; i<=n; i++)
+        scanf("%d",&s[i]);
+    printf("\nEnter the max subset value:");
+    scanf("%d",&d);
+    for(i=1; i<=n; i++)
+        sum=sum+s[i];
+    if(sum<d || s[1]>d)
+        printf("\nNo subset possible");
+    else
+        sumofsub(0,1,sum);
+    return 0;
+}
+    </code></pre>
+
+
+
+
+         <h2> selection </h2>
+    <pre><code class="language-c">
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+// Function to perform selection sort on an array
+void selectionSort(int arr[], int n)
+{
+    int i, j, min_idx;
+    for (i = 0; i < n-1; i++)
+    {
+        min_idx = i;  // Assume the current element is the minimum
+        for (j = i+1; j < n; j++)
+        {
+            if (arr[j] < arr[min_idx])
+            {
+                min_idx = j;  // Update min_idx if a smaller element is found
+            }
+        }
+        // Swap the found minimum element with the current element
+        int temp = arr[min_idx];
+        arr[min_idx] = arr[i];
+        arr[i] = temp;
+    }
+}
+
+// Function to generate an array of random numbers
+void generateRandomNumbers(int arr[], int n)
+{
+    for (int i = 0; i < n; i++)
+    {
+        arr[i] = rand() % 10000;  // Generate random numbers between 0 and 9999
+    }
+}
+
+int main()
+{
+
+    // Define different sizes for the array
+    int sizes[] = { 5000, 7000, 9000, 11000, 13000, 15000, 17000, 19000, 21000, 23000 };
+    int num_sizes = 10;
+
+    for (int k = 0; k < num_sizes; k++)
+    {
+        int n = sizes[k];
+        printf("Sorting array of %d elements...\n", n);
+
+        // Use a variable length array (VLA) for simplicity
+        int arr[n];
+
+        // Generate random numbers and store them in the array
+        generateRandomNumbers(arr, n);
+
+        // Measure the time taken to sort the array
+        clock_t start = clock();
+        selectionSort(arr, n);
+        clock_t end = clock();
+
+        // Calculate and print the time taken to sort the array
+        double time_taken = ((double)(end - start)) / CLOCKS_PER_SEC;
+        printf("Time taken to sort %d elements: %f seconds\n", n, time_taken);
+    }
+
+    return 0;
+}
+    </code></pre>
+
+
+
+                 <h2> merge </h2>
+    <pre><code class="language-c">
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+// Function to merge two sorted subarrays arr[low..mid] and arr[mid+1..high]
+void merge(int arr[], int temp[], int low, int mid, int high) {
+    int i = low;     // Starting index for left subarray
+    int j = mid + 1; // Starting index for right subarray
+    int k = low;     // Starting index to merge into the original array
+
+    // Merge the two halves into the temp array
+    while (i <= mid && j <= high) {
+        if (arr[i] <= arr[j]) {
+            temp[k++] = arr[i++];
+        } else {
+            temp[k++] = arr[j++];
+        }
+    }
+
+    // Copy the remaining elements of left subarray, if any
+    while (i <= mid) {
+        temp[k++] = arr[i++];
+    }
+
+    // Copy the remaining elements of right subarray, if any
+    while (j <= high) {
+        temp[k++] = arr[j++];
+    }
+
+    // Copy the merged elements back to the original array
+    for (i = low; i <= high; i++) {
+        arr[i] = temp[i];
+    }
+}
+
+// Merge Sort function with one temporary array
+void mergeSort(int arr[], int temp[], int low, int high) {
+    if (low < high) {
+        int mid = low + (high - low) / 2;
+
+        // Sort first and second halves using recursion
+        mergeSort(arr, temp, low, mid);
+        mergeSort(arr, temp, mid + 1, high);
+
+        // Merge the sorted halves
+        merge(arr, temp, low, mid, high);
+    }
+}
+
+int main() {
+    int n = 100000; // Total number of elements
+    int elements[n]; // Array to hold random elements
+
+    // Initialize elements with random numbers (optional)
+    // srand(time(NULL)); // Uncomment this line if you want random numbers
+    for (int i = 0; i < n; i++) {
+        elements[i] = rand() % 1000;
+    }
+
+    // Sorting and measuring time for arrays of different sizes
+    for (int size = 5000; size <= n; size += 2000) {
+        int arr[size];
+        int temp[size]; // Temporary array for merge operation
+
+        // Copy elements to arr for sorting
+        for (int i = 0; i < size; i++) {
+            arr[i] = elements[i];
+        }
+
+        clock_t start = clock();
+        mergeSort(arr, temp, 0, size - 1);
+        clock_t end = clock();
+
+        double time_taken = ((double)(end - start)) / CLOCKS_PER_SEC;
+        printf("Total time taken to sort %d elements is %lf seconds\n", size, time_taken);
+    }
+
+    return 0;
+}
+    </code></pre>
+
+  <h2> quick </h2>
+    <pre><code class="language-c">
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+// Function to swap two elements
+void swap(int* a, int* b) {
+    int temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+// Partition function
+int partition(int arr[], int low, int high) {
+    int pivot = arr[high];  // Choosing the last element as the pivot
+    int i = (low - 1);  // Index of smaller element
+
+    for (int j = low; j <= high - 1; j++) {
+        // If current element is smaller than the pivot
+        if (arr[j] < pivot) {
+            i++;    // Increment index of smaller element
+            swap(&arr[i], &arr[j]);
+        }
+    }
+    swap(&arr[i + 1], &arr[high]);
+    return (i + 1);
+}
+
+// Quick Sort function
+void quickSort(int arr[], int low, int high) {
+    if (low < high) {
+        // pi is partitioning index, arr[p] is now at right place
+        int pi = partition(arr, low, high);
+
+        // Separately sort elements before partition and after partition
+        quickSort(arr, low, pi - 1);
+        quickSort(arr, pi + 1, high);
+    }
+}
+
+// Function to print an array
+void printArray(int arr[], int size) {
+    for (int i = 0; i < size; i++)
+        printf("%d ", arr[i]);
+    printf("\n");
+}
+
+int main() {
+    int n = 100000; // Total number of elements
+    int elements[n];
+
+    // Initialize elements with random numbers
+    for (int i = 0; i < n; i++) {
+        elements[i] = rand() % 1000;
+    }
+
+    // Sorting and measuring time for arrays of different sizes
+    for (int size = 5000; size <= n; size += 2000) {
+        int arr[size];
+
+        // Copy elements to arr for sorting
+        for (int i = 0; i < size; i++) {
+            arr[i] = elements[i];
+        }
+
+        clock_t start = clock();
+        quickSort(arr, 0, size - 1);
+        clock_t end = clock();
+
+        double time_taken = ((double)(end - start)) / CLOCKS_PER_SEC;
+        printf("Total time taken to sort %d elements is %lf seconds\n", size, time_taken);
+    }
+
+    return 0;
+}
+    </code></pre>
+
+
+            
+  <h2> n-queens </h2>
+    <pre><code class="language-c">
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+
+// Function to print the solution
+void printSolution(int **board, int N)
+{
+    for (int i = 0; i < N; i++)
+    {
+        for (int j = 0; j < N; j++)
+        {
+            printf("%s ", board[i][j] ? "Q" : "#");
+        }
+        printf("\n");
+    }
+}
+
+// Function to check if a queen can be placed on board[row][col]
+bool isSafe(int **board, int N, int row, int col)
+{
+    int i, j;
+
+    // Check this row on left side
+    for (i = 0; i < col; i++)
+    {
+        if (board[row][i])
+        {
+            return false;
+        }
+    }
+
+    // Check upper diagonal on left side
+    for (i = row, j = col; i >= 0 && j >= 0; i--, j--)
+    {
+        if (board[i][j])
+        {
+            return false;
+        }
+    }
+
+    // Check lower diagonal on left side
+    for (i = row, j = col; j >= 0 && i < N; i++, j--)
+    {
+        if (board[i][j])
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+// A recursive utility function to solve N Queen problem
+bool solveNQUtil(int **board, int N, int col)
+{
+    // If all queens are placed, then return true
+    if (col >= N)
+    {
+        return true;
+    }
+
+    // Consider this column and try placing this queen in all rows one by one
+    for (int i = 0; i < N; i++)
+    {
+        if (isSafe(board, N, i, col))
+        {
+            // Place this queen in board[i][col]
+            board[i][col] = 1;
+
+            // Recur to place rest of the queens
+            if (solveNQUtil(board, N, col + 1))
+            {
+                return true;
+            }
+
+            // If placing queen in board[i][col] doesn't lead to a solution,
+            // then remove queen from board[i][col]
+            board[i][col] = 0; // BACKTRACK
+        }
+    }
+
+    // If the queen cannot be placed in any row in this column col, then return false
+    return false;
+}
+
+// This function solves the N Queen problem using Backtracking
+// It mainly uses solveNQUtil() to solve the problem
+// It returns false if queens cannot be placed, otherwise, return true and prints the placement of queens
+bool solveNQ(int N)
+{
+    int **board = (int **)malloc(N * sizeof(int *));
+    for (int i = 0; i < N; i++)
+    {
+        board[i] = (int *)malloc(N * sizeof(int));
+        for (int j = 0; j < N; j++)
+        {
+            board[i][j] = 0;
+        }
+    }
+
+    if (!solveNQUtil(board, N, 0))
+    {
+        printf("Solution does not exist\n");
+        for (int i = 0; i < N; i++)
+        {
+            free(board[i]);
+        }
+        free(board);
+        return false;
+    }
+
+    printSolution(board, N);
+
+    for (int i = 0; i < N; i++)
+    {
+        free(board[i]);
+    }
+    free(board);
+    return true;
+}
+
+int main()
+{
+    int N;
+    printf("Enter the number of queens: ");
+    scanf("%d", &N);
+    solveNQ(N);
+    return 0;
+}
+    </code></pre>
+
+
+
+
+
+
+
+
+
+
+
+
+        
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/prism.min.js"></script>
 </body>
 </html>
